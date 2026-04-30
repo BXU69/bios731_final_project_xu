@@ -3,10 +3,13 @@ title: "Figures and Tables"
 author: "Baijia Xu"
 date: "04/14"
 output:
-  html_document:
-    code_folding: hide
-    self_contained: true
+  pdf_document:
+    latex_engine: xelatex
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
 
 ```{r}
 library(dplyr)
@@ -101,7 +104,7 @@ param_table %>%
       n_show, dat$q),
     col.names = c("State", "Edge", "True beta0", "Est. beta0", "True beta1", "Est. beta1")
   ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE) %>%
   collapse_rows(columns = 1, valign = "top")
 ```
 
@@ -149,7 +152,7 @@ sel$table %>%
   mutate(across(c(loglik, AIC, BIC), ~round(.x, 2))) %>%
   kable(caption = "Model Selection: AIC and BIC across K",
         col.names = c("K", "Log-lik", "# Params", "AIC", "BIC", "Converged", "Iterations")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 
 cat(sprintf("BIC-selected K: %d (true K = 2)\n",
             sel$table$K[which.min(sel$table$BIC)]))
@@ -215,7 +218,7 @@ pi_summary_demo = data.frame(
 pi_summary_demo %>%
   kable(caption = sprintf("Bootstrap Inference: Mixing Proportions (%d replicates, n=100, p=6, K=2)", B_actual),
         col.names = c("State", "Estimate", "Bootstrap SE", "95% CI Lower", "95% CI Upper")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE)
 ```
 
 ```{r bootstrap-beta1-table}
@@ -246,7 +249,7 @@ beta1_table = do.call(rbind, beta1_rows)
 beta1_table %>%
   kable(caption = "Bootstrap Inference: Slope Parameters beta1 (first 8 edges per state)",
         col.names = c("State", "Edge", "Estimate", "Bootstrap SE", "95% CI Lower", "95% CI Upper")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE) %>%
   collapse_rows(columns = 1, valign = "top")
 ```
 
@@ -309,9 +312,9 @@ sim_df %>%
   kable(
     caption = "Simulation Study Summary (500 replicates per scenario)",
     col.names = c("n", "p", "True K", "BIC Accuracy",
-                  "Mean ‖beta1 error‖_F", "Mean ARI", "% Converged")
+                  "Mean ||beta1 error||_F", "Mean ARI", "% Converged")
   ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE) %>%
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = FALSE) %>%
   pack_rows("K = 2", 1, 6) %>%
   pack_rows("K = 3", 7, 12) %>%
   pack_rows("K = 4", 13, 18)

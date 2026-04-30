@@ -208,83 +208,6 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
-<script>
-window.initializeCodeFolding = function(show) {
-
-  // handlers for show-all and hide all
-  $("#rmd-show-all-code").click(function() {
-    $('div.r-code-collapse').each(function() {
-      $(this).collapse('show');
-    });
-  });
-  $("#rmd-hide-all-code").click(function() {
-    $('div.r-code-collapse').each(function() {
-      $(this).collapse('hide');
-    });
-  });
-
-  // index for unique code element ids
-  var currentIndex = 1;
-
-  // select all R code blocks
-  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
-  rCodeBlocks.each(function() {
-    // skip if the block has fold-none class
-    if ($(this).hasClass('fold-none')) return;
-
-    // create a collapsable div to wrap the code in
-    var div = $('<div class="collapse r-code-collapse"></div>');
-    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
-    var id = 'rcode-643E0F36' + currentIndex++;
-    div.attr('id', id);
-    $(this).before(div);
-    $(this).detach().appendTo(div);
-
-    // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
-    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
-    showCodeButton.append(showCodeText);
-    showCodeButton
-        .attr('data-toggle', 'collapse')
-        .attr('data-bs-toggle', 'collapse') // BS5
-        .attr('data-target', '#' + id)
-        .attr('data-bs-target', '#' + id)   // BS5
-        .attr('aria-expanded', showThis)
-        .attr('aria-controls', id);
-
-    var buttonRow = $('<div class="row"></div>');
-    var buttonCol = $('<div class="col-md-12"></div>');
-
-    buttonCol.append(showCodeButton);
-    buttonRow.append(buttonCol);
-
-    div.before(buttonRow);
-
-    // show the div if necessary
-    if (showThis) div.collapse('show');
-
-    // update state of button on show/hide
-    //   * Change text
-    //   * add a class for intermediate states styling
-    div.on('hide.bs.collapse', function () {
-      showCodeText.text('Show');
-      showCodeButton.addClass('btn-collapsing');
-    });
-    div.on('hidden.bs.collapse', function () {
-      showCodeButton.removeClass('btn-collapsing');
-    });
-    div.on('show.bs.collapse', function () {
-      showCodeText.text('Hide');
-      showCodeButton.addClass('btn-expanding');
-    });
-    div.on('shown.bs.collapse', function () {
-      showCodeButton.removeClass('btn-expanding');
-    });
-
-  });
-
-}
-</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -632,9 +555,6 @@ display: none;
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -650,14 +570,6 @@ display: none;
 
 
 <div id="header">
-
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -767,9 +679,9 @@ param_table %&gt;%
       n_show, dat$q),
     col.names = c(&quot;State&quot;, &quot;Edge&quot;, &quot;True beta0&quot;, &quot;Est. beta0&quot;, &quot;True beta1&quot;, &quot;Est. beta1&quot;)
   ) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), full_width = FALSE) %&gt;%
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;hold_position&quot;), full_width = FALSE) %&gt;%
   collapse_rows(columns = 1, valign = &quot;top&quot;)</code></pre>
-<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Estimated vs. True Parameters: first 10 of q=21 edges per state. Each
 state has q intercepts (beta0) and q slopes (beta1), one per edge.
@@ -1184,8 +1096,8 @@ sel$table %&gt;%
   mutate(across(c(loglik, AIC, BIC), ~round(.x, 2))) %&gt;%
   kable(caption = &quot;Model Selection: AIC and BIC across K&quot;,
         col.names = c(&quot;K&quot;, &quot;Log-lik&quot;, &quot;# Params&quot;, &quot;AIC&quot;, &quot;BIC&quot;, &quot;Converged&quot;, &quot;Iterations&quot;)) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), full_width = FALSE)</code></pre>
-<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;hold_position&quot;), full_width = FALSE)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Model Selection: AIC and BIC across K
 </caption>
@@ -1367,8 +1279,8 @@ pi_summary_demo = data.frame(
 pi_summary_demo %&gt;%
   kable(caption = sprintf(&quot;Bootstrap Inference: Mixing Proportions (%d replicates, n=100, p=6, K=2)&quot;, B_actual),
         col.names = c(&quot;State&quot;, &quot;Estimate&quot;, &quot;Bootstrap SE&quot;, &quot;95% CI Lower&quot;, &quot;95% CI Upper&quot;)) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), full_width = FALSE)</code></pre>
-<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;hold_position&quot;), full_width = FALSE)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Bootstrap Inference: Mixing Proportions (200 replicates, n=100, p=6,
 K=2)
@@ -1456,9 +1368,9 @@ beta1_table = do.call(rbind, beta1_rows)
 beta1_table %&gt;%
   kable(caption = &quot;Bootstrap Inference: Slope Parameters beta1 (first 8 edges per state)&quot;,
         col.names = c(&quot;State&quot;, &quot;Edge&quot;, &quot;Estimate&quot;, &quot;Bootstrap SE&quot;, &quot;95% CI Lower&quot;, &quot;95% CI Upper&quot;)) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), full_width = FALSE) %&gt;%
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;hold_position&quot;), full_width = FALSE) %&gt;%
   collapse_rows(columns = 1, valign = &quot;top&quot;)</code></pre>
-<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Bootstrap Inference: Slope Parameters beta1 (first 8 edges per state)
 </caption>
@@ -1868,13 +1780,13 @@ sim_df = bind_rows(all_results) %&gt;%
   kable(
     caption = &quot;Simulation Study Summary (500 replicates per scenario)&quot;,
     col.names = c(&quot;n&quot;, &quot;p&quot;, &quot;True K&quot;, &quot;BIC Accuracy&quot;,
-                  &quot;Mean ‖beta1 error‖_F&quot;, &quot;Mean ARI&quot;, &quot;% Converged&quot;)
+                  &quot;Mean ||beta1 error||_F&quot;, &quot;Mean ARI&quot;, &quot;% Converged&quot;)
   ) %&gt;%
-  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), full_width = FALSE) %&gt;%
+  kable_styling(latex_options = c(&quot;striped&quot;, &quot;hold_position&quot;), full_width = FALSE) %&gt;%
   pack_rows(&quot;K = 2&quot;, 1, 6) %&gt;%
   pack_rows(&quot;K = 3&quot;, 7, 12) %&gt;%
   pack_rows(&quot;K = 4&quot;, 13, 18)</code></pre>
-<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Simulation Study Summary (500 replicates per scenario)
 </caption>
@@ -1893,7 +1805,7 @@ True K
 BIC Accuracy
 </th>
 <th style="text-align:right;">
-Mean ‖beta1 error‖_F
+Mean &amp;#124;&amp;#124;beta1 error&amp;#124;&amp;#124;_F
 </th>
 <th style="text-align:right;">
 Mean ARI
@@ -2419,11 +2331,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
